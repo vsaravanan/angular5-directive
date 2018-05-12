@@ -30,15 +30,27 @@ class Joke {
   }
 }
 
-
 @Directive({
   selector: "[ccCardHover]"
 })
 class CardHoverDirective {
+  @HostBinding('class.card-outline-primary') private ishovering: boolean; 
+
   constructor(private el: ElementRef,
               private renderer: Renderer) {
-    //noinspection TypeScriptUnresolvedVariable,TypeScriptUnresolvedFunction
-    renderer.setElementStyle(el.nativeElement, 'backgroundColor', 'gray');
+    // renderer.setElementStyle(el.nativeElement, 'backgroundColor', 'gray');
+  }
+
+  @HostListener('mouseover') onMouseOver() {
+    let part = this.el.nativeElement.querySelector('.card-text');
+    this.renderer.setElementStyle(part, 'display', 'block');
+    this.ishovering = true;
+  }
+
+  @HostListener('mouseout') onMouseOut() {
+    let part = this.el.nativeElement.querySelector('.card-text');
+    this.renderer.setElementStyle(part, 'display', 'none');
+    this.ishovering = false;
   }
 }
 
@@ -47,14 +59,13 @@ class CardHoverDirective {
   template: `
 <div class="card card-block" ccCardHover>
   <h4 class="card-title">{{data.setup}}</h4>
+
   <p class="card-text"
-     [hidden]="data.hide">{{data.punchline}}</p>
-  <button (click)="data.toggle()"
-     class="btn btn-primary">Tell Me
-  </button>
+     [style.display]="'none'">{{data.punchline}}</p>  
 </div>
-  `
+`
 })
+
 
 // <p class="card-text"
 // [hidden]="data.hide">{{data.punchline}}</p>
